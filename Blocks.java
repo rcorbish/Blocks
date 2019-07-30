@@ -218,7 +218,7 @@ class Board {
     // This executes the move left. No checking is done - it assumes
     // canMoveLeft() returned true.
     public void moveLeft( int block ) { 
-        for( int x=0 ; x<X-1 ; x++ ) {
+        for( int x=0 ; x<X ; x++ ) {
             for( int y=0 ; y<Y ; y++ ) {
                 if( x<X-1 && blockAt(x+1, y) == block ) {
                     setBlockAt(x, y, block ) ;
