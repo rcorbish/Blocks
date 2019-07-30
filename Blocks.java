@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,15 +19,26 @@ public class Blocks {
             // A block must be rectangular - this is NOT checked
             Board start = new Board( new int[][]{ 
                 {  1,  1, -1,  2, -1 },
-                { -1, -1,  0,  2,  3 },
-                { -1, -1, -1, -1,  3 },  // << target here - get block 0 here
-                {  4,  4, -1, -1, -1 },
-                { -1, -1, -1, -1, -1 },
+                {  0, -1,  5,  2,  3 },
+                { -1, -1,  5,  6,  3 },  // << target here - get block 0 here
+                {  4,  4,  5,  6, -1 },
+                { -1, -1,  7,  7,  7 }
             }) ;
 
             // Solve given starting board and target ( move block 0 to [4,2] )
-            sol.solve( start, 4, 2 ) ;
+            Collection<Board> sequence = sol.solve( start, 2, 4 ) ;
 
+            if( sequence != null ) {
+                System.out.println( String.format( "Solved in %d moves", sequence.size() ) ) ;
+    
+                // Then pretty print out each successive move
+                for( Board b : sequence ) {
+                    System.out.println( b ) ;
+                }
+            } else {
+                System.out.println( "No solution found" ) ;
+            }
+    
 		} catch( Throwable t ) {
 			t.printStackTrace() ;
 			System.exit( -2 ) ;
@@ -36,10 +48,11 @@ public class Blocks {
 
 class BlockSolver {
     //
-    // One method. This uses BFS to scan the target space to find the best solution
-    // i.e. the shortest number of moves from start to target
-
-    public void solve( Board start, int xTarget, int yTarget ) {
+    // This uses BFS to scan the target space to find the first solution
+    // i.e. the shortest number of moves from start to target. Because there can be
+    // many targets (we only check piee 0) this may not provide the optimum solution
+    //
+    public Collection<Board> solve( Board start, int xTarget, int yTarget ) {
         // Remember what moves we have completed, and from where 
         // we got to that state.
         final Map<Board,Board> doneMoves = new ConcurrentHashMap<>() ;
@@ -70,24 +83,19 @@ class BlockSolver {
                 } while( !from.equals(start) ) ;
                 // Add the inital starting on there 
                 sequence.addFirst( start ) ;
-
-                System.out.println( "Solved ... " ) ;
-
-                // Then pretty print out each successive move
-                for( Board b : sequence ) {
-                    System.out.println( b ) ;
-                }
-                break ;
+                return sequence ;  // first solution
             }
             // Determine all valid moves from the current position
             // If we have NOT been to that state push onto queue for checking
             List<Board> nextValidMoves = a.nextMoves() ;
             for( Board b : nextValidMoves ) {
-                if( doneMoves.containsKey(b) ) continue ;
-                doneMoves.put( b, a ) ;
-                q.addLast( b ) ;
+                if( !doneMoves.containsKey(b) ) {
+                    doneMoves.put( b, a ) ;
+                    q.addLast( b ) ;
+                }
             }
         }
+        return null ;       // see also return above
     }
 }
 
@@ -159,12 +167,6 @@ class Board {
 
         // All blocks are considered
         for( int b=0 ; b<numBlocks ; b++ ) {
-            if( canMoveLeft(b) ) {  // can block B move left ?
-                // it can so copy board & shift the block one step left
-                Board newBoard = new Board( this ) ;
-                newBoard.moveLeft(b);
-                validMoves.add( newBoard ) ;
-            }
             if( canMoveRight(b) ) {
                 Board newBoard = new Board( this ) ;
                 newBoard.moveRight(b);
@@ -178,6 +180,12 @@ class Board {
             if( canMoveDown(b) ) {
                 Board newBoard = new Board( this ) ;
                 newBoard.moveDown(b);
+                validMoves.add( newBoard ) ;
+            }
+            if( canMoveLeft(b) ) {  // can block b move left ?
+                // it can so copy board & shift the block one step left
+                Board newBoard = new Board( this ) ;
+                newBoard.moveLeft(b);
                 validMoves.add( newBoard ) ;
             }
         }
