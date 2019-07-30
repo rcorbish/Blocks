@@ -26,7 +26,7 @@ public class Blocks {
             }) ;
 
             // Solve given starting board and target ( move block 0 to [4,2] )
-            Collection<Board> sequence = sol.solve( start, 2, 4 ) ;
+            Collection<Board> sequence = sol.solve( start, 4, 2 ) ;
 
             if( sequence != null ) {
                 System.out.println( String.format( "Solved in %d moves", sequence.size() ) ) ;
