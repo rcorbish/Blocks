@@ -129,9 +129,9 @@ class Board {
         board =  new int[X*Y] ;
         int ix = 0 ;
         numBlocks = 0 ;
-        for( int y=0 ; y<Y ; y++ ) {
-            for( int x=0 ; x<X ; x++ ) {
-                board[ix] = start[x][y] ;
+        for( int x=0 ; x<X ; x++ ) {
+            for( int y=0 ; y<Y ; y++ ) {
+                board[ix] = start[y][x] ;
                 // Biggest block index = numBlocks ( need to +1 )
                 if( board[ix] > numBlocks ) {
                     numBlocks = board[ix] + 1 ;
