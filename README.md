@@ -20,10 +20,11 @@ _ _ 5 0 6
 _ 7 7 7 _ 
 ```
 There are 7 blocks in the above output, Block 1 is in the top left and is 2 blocks wide. Block 7 is 3 blocks wide in the bottom row.
+
 In the above example the following moves are possible:
 * Block 1  can move Down
 * Block 2  stuck
-* Block 3  can move Down
+* Block 3  stuck
 * Block 4  can move Up or right
 * Block 5  can move Down
 * Block 6  can move Down
